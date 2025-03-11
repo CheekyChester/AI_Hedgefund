@@ -3,7 +3,12 @@ import time
 import threading
 import uuid
 import os
+import logging
 from flask import Response, stream_with_context
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Store active analysis jobs
 active_jobs = {}
@@ -65,11 +70,25 @@ def run_analysis_in_background(job_id, ticker, api_key):
         try:
             from ai_hedge_fund import (
                 market_data_chain, sentiment_chain, macro_analysis_chain, 
-                strategy_chain, risk_chain, summary_chain, generate_html_report
+                strategy_chain, risk_chain, summary_chain, generate_html_report,
+                reload_llm_with_api_key
             )
+            
+            # Properly set the API key in the LLM
+            logger.info(f"Setting Perplexity API key (starts with {api_key[:5]}...) for job {job_id}")
+            success = reload_llm_with_api_key(api_key)
+            
+            if not success:
+                raise Exception("Failed to set API key in LLM")
+                
+            # Double-check environment variable was set
+            if os.environ.get('PPLX_API_KEY') != api_key:
+                os.environ['PPLX_API_KEY'] = api_key
+                logger.warning("Had to manually set API key in environment")
             
             # Update job status
             job['status'] = 'analyzing'
+            logger.info(f"Starting analysis for job {job_id}, ticker: {ticker}")
             
             # Override sequential_agent to report progress per chain
             job['progress'] = 5
@@ -106,7 +125,13 @@ def run_analysis_in_background(job_id, ticker, api_key):
                 # Step 1: Market Data
                 job['steps'][0]['status'] = 'running'
                 job['progress'] = 10
-                result['market_data'] = market_data_chain.invoke({"ticker": ticker.upper()})
+                logger.info(f"Executing market_data_chain for {ticker.upper()}")
+                try:
+                    result['market_data'] = market_data_chain.invoke({"ticker": ticker.upper()})
+                    logger.info(f"Successfully completed market_data_chain")
+                except Exception as e:
+                    logger.error(f"Error in market_data_chain: {str(e)}")
+                    raise Exception(f"Error in market data analysis: {str(e)}")
                 update_job_progress('market_data', result['market_data'])
                 
                 # Step 2: Sentiment Analysis
