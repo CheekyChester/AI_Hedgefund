@@ -63,7 +63,10 @@ def run_analysis_in_background(job_id, ticker, api_key):
         
         # Import AI hedge fund here to avoid circular imports
         try:
-            from ai_hedge_fund import sequential_agent, generate_html_report
+            from ai_hedge_fund import (
+                market_data_chain, sentiment_chain, macro_analysis_chain, 
+                strategy_chain, risk_chain, summary_chain, generate_html_report
+            )
             
             # Update job status
             job['status'] = 'analyzing'
@@ -71,35 +74,80 @@ def run_analysis_in_background(job_id, ticker, api_key):
             # Override sequential_agent to report progress per chain
             job['progress'] = 5
             
-            # Create a capture handler for the sequential agent
-            original_invoke = sequential_agent.invoke
-            
-            def capture_invoke(inputs):
-                # This will capture the results from each chain in the sequence
-                result = original_invoke(inputs)
-                
-                # Update the steps based on the result
+            # Update progress monitoring
+            def update_job_progress(step_name, result_value=None):
                 step_names = ['market_data', 'sentiment_analysis', 'macro_analysis', 'strategy', 'risk_assessment', 'summary']
-                total_steps = len(step_names)
+                step_idx = next((idx for idx, name in enumerate(step_names) if name == step_name), -1)
                 
-                for i, step_name in enumerate(step_names):
-                    if step_name in result:
-                        step_idx = next((idx for idx, s in enumerate(job['steps']) if s['name'] == step_name), None)
-                        if step_idx is not None:
-                            job['steps'][step_idx]['status'] = 'complete'
+                if step_idx >= 0:
+                    # Find the step in our job
+                    job_step_idx = next((idx for idx, s in enumerate(job['steps']) if s['name'] == step_name), None)
+                    if job_step_idx is not None:
+                        job['steps'][job_step_idx]['status'] = 'complete'
+                        if result_value:
                             # Store just a preview of the result (first 100 chars)
-                            job['steps'][step_idx]['result'] = result[step_name][:100] + "..."
-                            # Update overall progress
-                            job['progress'] = min(90, 5 + (i + 1) * (85 // total_steps))
-                
-                return result
+                            preview = result_value[:100]
+                            if len(result_value) > 100:
+                                preview += "..."
+                            job['steps'][job_step_idx]['result'] = preview
+                        
+                        # Update overall progress (each step is worth ~15% of progress)
+                        total_steps = len(step_names)
+                        job['progress'] = min(90, 5 + (step_idx + 1) * (85 // total_steps))
             
-            # Replace the invoke method temporarily
-            sequential_agent.invoke = capture_invoke
-            
-            # Run the analysis
+            # Run the analysis step by step - this is safer than monkey-patching sequential_agent
             try:
-                result = sequential_agent({"ticker": ticker.upper()})
+                # Create an empty result dictionary
+                result = {}
+                
+                # Execute each chain individually with progress updates
+                job['status'] = 'analyzing'
+                
+                # Step 1: Market Data
+                job['steps'][0]['status'] = 'running'
+                job['progress'] = 10
+                result['market_data'] = market_data_chain.invoke({"ticker": ticker.upper()})
+                update_job_progress('market_data', result['market_data'])
+                
+                # Step 2: Sentiment Analysis
+                job['steps'][1]['status'] = 'running'
+                job['progress'] = 25
+                result['sentiment_analysis'] = sentiment_chain.invoke({"ticker": ticker.upper()})
+                update_job_progress('sentiment_analysis', result['sentiment_analysis'])
+                
+                # Step 3: Macro Analysis
+                job['steps'][2]['status'] = 'running'
+                job['progress'] = 40
+                result['macro_analysis'] = macro_analysis_chain.invoke({"ticker": ticker.upper()})
+                update_job_progress('macro_analysis', result['macro_analysis'])
+                
+                # Step 4: Strategy
+                job['steps'][3]['status'] = 'running'
+                job['progress'] = 55
+                result['strategy'] = strategy_chain.invoke({
+                    "market_data": result['market_data'], 
+                    "sentiment_analysis": result['sentiment_analysis'],
+                    "macro_analysis": result['macro_analysis']
+                })
+                update_job_progress('strategy', result['strategy'])
+                
+                # Step 5: Risk Assessment
+                job['steps'][4]['status'] = 'running'
+                job['progress'] = 70
+                result['risk_assessment'] = risk_chain.invoke({"strategy": result['strategy']})
+                update_job_progress('risk_assessment', result['risk_assessment'])
+                
+                # Step 6: Summary
+                job['steps'][5]['status'] = 'running'
+                job['progress'] = 85
+                result['summary'] = summary_chain.invoke({
+                    "market_data": result['market_data'], 
+                    "sentiment_analysis": result['sentiment_analysis'],
+                    "macro_analysis": result['macro_analysis'],
+                    "strategy": result['strategy'],
+                    "risk_assessment": result['risk_assessment']
+                })
+                update_job_progress('summary', result['summary'])
                 
                 # Generate HTML content
                 job['progress'] = 95
@@ -114,10 +162,15 @@ def run_analysis_in_background(job_id, ticker, api_key):
                 job['filename'] = filename
                 job['progress'] = 100
                 job['status'] = 'complete'
-                
-            finally:
-                # Restore the original invoke method
-                sequential_agent.invoke = original_invoke
+            
+            except Exception as chain_error:
+                job['errors'].append(f"Error in AI chain execution: {str(chain_error)}")
+                job['status'] = 'error'
+                # Set status of current step to error
+                current_step = next((s for s in job['steps'] if s['status'] == 'running'), None)
+                if current_step:
+                    current_step['status'] = 'error'
+                raise
                 
         except Exception as e:
             job['errors'].append(f"Error in analysis: {str(e)}")
