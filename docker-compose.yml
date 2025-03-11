@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  ai_hedge_fund:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ai_hedge_fund:latest
+    container_name: AI_Hedge_Fund
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./reports:/app/reports
+    restart: unless-stopped
+    # No need to set PPLX_API_KEY here as it will be requested on first run
+    # and stored inside the container

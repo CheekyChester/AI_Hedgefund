@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hedge Fund</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-color: #333;
+            --muted-color: #6c757d;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar h1 {
+            margin-top: 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+        
+        .sidebar-section {
+            margin-top: 30px;
+        }
+        
+        .sidebar-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .analysis-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: var(--muted-color);
+            cursor: not-allowed;
+        }
+        
+        .error-message {
+            color: var(--accent-color);
+            margin-top: 10px;
+        }
+        
+        .report-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: none;
+        }
+        
+        .report-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .report-title {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+        
+        .report-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .report-actions button {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        
+        .download-btn {
+            background-color: var(--success-color);
+        }
+        
+        .download-btn:hover {
+            background-color: #219653;
+        }
+        
+        .report-iframe {
+            width: 100%;
+            height: 700px;
+            border: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--secondary-color);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .past-reports {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .past-reports li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .past-reports a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            transition: 0.2s;
+        }
+        
+        .past-reports a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .past-reports .ticker {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .past-reports .date {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>🤖 AI Hedge Fund</h1>
+            
+            <div class="sidebar-section">
+                <h2>Recent Reports</h2>
+                <ul class="past-reports" id="pastReportsList">
+                    <li>Loading...</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="analysis-form">
+                <h2>Generate Financial Analysis</h2>
+                
+                <form id="analysisForm">
+                    <div class="form-group">
+                        <label for="ticker">Stock Ticker Symbol:</label>
+                        <input type="text" id="ticker" name="ticker" placeholder="e.g., AAPL, MSFT, GOOGL" required>
+                    </div>
+                    
+                    <button type="submit" id="analyzeBtn">Analyze Stock</button>
+                    
+                    <div id="errorMessage" class="error-message" style="display: none;"></div>
+                </form>
+            </div>
+            
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>Generating comprehensive financial analysis...</p>
+                <p><small>This may take 1-2 minutes. Please wait.</small></p>
+            </div>
+            
+            <div class="report-container" id="reportContainer">
+                <div class="report-header">
+                    <h3 class="report-title" id="reportTitle">Analysis Report</h3>
+                    <div class="report-actions">
+                        <button class="download-btn" id="downloadBtn">Download Report</button>
+                    </div>
+                </div>
+                
+                <iframe class="report-iframe" id="reportFrame"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Elements
+        const analysisForm = document.getElementById('analysisForm');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const reportContainer = document.getElementById('reportContainer');
+        const reportFrame = document.getElementById('reportFrame');
+        const reportTitle = document.getElementById('reportTitle');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const pastReportsList = document.getElementById('pastReportsList');
+        
+        // Load past reports
+        loadPastReports();
+        
+        // Form submission
+        analysisForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const ticker = document.getElementById('ticker').value.trim();
+            
+            if (!ticker) {
+                showError('Please enter a valid ticker symbol');
+                return;
+            }
+            
+            // Show loading indicator
+            analyzeBtn.disabled = true;
+            loadingIndicator.style.display = 'block';
+            reportContainer.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Submit to backend
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `ticker=${encodeURIComponent(ticker)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading indicator
+                loadingIndicator.style.display = 'none';
+                analyzeBtn.disabled = false;
+                
+                if (data.success) {
+                    // Show report
+                    reportTitle.textContent = `Analysis Report for ${ticker.toUpperCase()}`;
+                    reportFrame.src = `/report/${data.filename}`;
+                    reportContainer.style.display = 'block';
+                    
+                    // Set download link
+                    downloadBtn.onclick = function() {
+                        window.location.href = `/download/${data.filename}`;
+                    };
+                    
+                    // Refresh past reports list
+                    loadPastReports();
+                } else {
+                    showError(data.message || 'Failed to generate report');
+                }
+            })
+            .catch(error => {
+                loadingIndicator.style.display = 'none';
+                analyzeBtn.disabled = false;
+                showError('An error occurred. Please try again.');
+                console.error('Error:', error);
+            });
+        });
+        
+        // Load past reports
+        function loadPastReports() {
+            fetch('/reports')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.reports && data.reports.length > 0) {
+                        const reportItems = data.reports.map(report => {
+                            return `
+                                <li>
+                                    <a href="/report/${report.filename}" target="_blank">
+                                        <span class="ticker">${report.ticker}</span>
+                                        <span class="date">${formatDateTime(report.date_time)}</span>
+                                    </a>
+                                </li>
+                            `;
+                        }).join('');
+                        
+                        pastReportsList.innerHTML = reportItems;
+                    } else {
+                        pastReportsList.innerHTML = '<li>No reports yet</li>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading past reports:', error);
+                    pastReportsList.innerHTML = '<li>Failed to load reports</li>';
+                });
+        }
+        
+        // Format date and time
+        function formatDateTime(dateTimeStr) {
+            try {
+                // Simple format for display
+                const year = dateTimeStr.substring(0, 4);
+                const month = dateTimeStr.substring(4, 6);
+                const day = dateTimeStr.substring(6, 8);
+                return `${month}/${day}/${year}`;
+            } catch (e) {
+                return dateTimeStr;
+            }
+        }
+        
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
