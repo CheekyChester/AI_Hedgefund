@@ -1,0 +1,290 @@
+"TimeUTC","timestampInMs","requestPath","requestMethod","requestQueryString","responseStatusCode","requestId","requestUserAgent","level","environment","branch","vercelCache","type","function","host","deploymentDomain","deploymentId","durationMs","region","maxMemoryUsed","memorySize","message","projectId"
+"2025-03-11 20:35:11",1741725311447,"ai-hedgefund.vercel.app/favicon.ico","GET","",-1,"zrsfk-1741725311191-942bdc4c40e0","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:11",1741725311249,"ai-hedgefund.vercel.app/favicon.ico","GET","",500,"zrsfk-1741725311191-942bdc4c40e0","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",181,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:11",1741725311043,"ai-hedgefund.vercel.app/","GET","",-1,"ksq22-1741725310790-5495b5eb8890","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:10",1741725310837,"ai-hedgefund.vercel.app/","GET","",500,"ksq22-1741725310790-5495b5eb8890","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",189,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:07",1741725307380,"ai-hedgefund.vercel.app/favicon.ico","GET","",-1,"sstmb-1741725307130-22a5393d021a","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:07",1741725307185,"ai-hedgefund.vercel.app/favicon.ico","GET","",500,"sstmb-1741725307130-22a5393d021a","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",180,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:06",1741725306980,"ai-hedgefund.vercel.app/api/debug","GET","",-1,"f6w6h-1741725306736-fd2fced5b4f6","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:06",1741725306783,"ai-hedgefund.vercel.app/api/debug","GET","",500,"f6w6h-1741725306736-fd2fced5b4f6","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",179,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:06",1741725306081,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.png","GET","",-1,"5w7hn-1741725305837-d1c07c438d7d","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:05",1741725305873,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.png","GET","",500,"5w7hn-1741725305837-d1c07c438d7d","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",191,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:03",1741725303767,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.png","GET","",-1,"zl6wc-1741725303530-6345b97a5ff0","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:03",1741725303566,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.png","GET","",500,"zl6wc-1741725303530-6345b97a5ff0","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",182,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:02",1741725302403,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.png","GET","",-1,"8j4pq-1741725302155-a2f6fc55b2d7","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:02",1741725302195,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.png","GET","",500,"8j4pq-1741725302155-a2f6fc55b2d7","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",189,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:02",1741725302106,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.ico","GET","",-1,"r78sl-1741725301868-d12f5820e0db","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:01",1741725301904,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.ico","GET","",500,"r78sl-1741725301868-d12f5820e0db","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",182,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:01",1741725301026,"ai-hedgefund.vercel.app/favicon.ico","GET","",-1,"2qnzq-1741725300651-efa7f96142af","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:00",1741725300826,"ai-hedgefund.vercel.app/favicon.ico","GET","",500,"2qnzq-1741725300651-efa7f96142af","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",182,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:00",1741725300483,"ai-hedgefund.vercel.app/api/debug","GET","",-1,"7tptw-1741725300236-084836fe578e","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:35:00",1741725300282,"ai-hedgefund.vercel.app/api/debug","GET","",500,"7tptw-1741725300236-084836fe578e","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",184,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:59",1741725299743,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.ico","GET","",-1,"96qcg-1741725299506-7cf02653cf7c","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:59",1741725299543,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.ico","GET","",500,"96qcg-1741725299506-7cf02653cf7c","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",183,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:58",1741725298362,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.ico","GET","",-1,"7mjhl-1741725298117-1633aa220d39","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:58",1741725298153,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.ico","GET","",500,"7mjhl-1741725298117-1633aa220d39","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",190,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:57",1741725297942,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",-1,"95n2z-1741725297698-d59aceee9091","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:57",1741725297737,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",500,"95n2z-1741725297698-d59aceee9091","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",190,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:56",1741725296560,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",-1,"2h54g-1741725296290-b96fe9d6d035","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:56",1741725296350,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",500,"2h54g-1741725296290-b96fe9d6d035","Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.84 Mobile/15E148 Safari/604.1","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",193,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:53",1741725293901,"ai-hedgefund.vercel.app/favicon.ico","GET","",-1,"6qzdb-1741725293492-d2c103f1ff96","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:53",1741725293687,"ai-hedgefund.vercel.app/favicon.ico","GET","",500,"6qzdb-1741725293492-d2c103f1ff96","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",195,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:53",1741725293284,"ai-hedgefund.vercel.app/api/debug","GET","",-1,"m48nd-1741725292889-f655936f4f71","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:53",1741725293070,"ai-hedgefund.vercel.app/api/debug","GET","",500,"m48nd-1741725292889-f655936f4f71","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",199,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:49",1741725289088,"ai-hedgefund.vercel.app/favicon.ico","GET","",-1,"2q4zm-1741725288829-2c9e101dbb40","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:48",1741725288883,"ai-hedgefund.vercel.app/favicon.ico","GET","",500,"2q4zm-1741725288829-2c9e101dbb40","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",186,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:48",1741725288457,"ai-hedgefund.vercel.app/","GET","",-1,"69pvv-1741725287926-4d342ab1107b","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:48",1741725288239,"ai-hedgefund.vercel.app/","GET","",500,"69pvv-1741725287926-4d342ab1107b","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund.vercel.app","ai-hedgefund.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",202,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:19",1741725259443,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.ico","GET","",-1,"ssbhp-1741725259208-13cead17c8cf","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:19",1741725259244,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.ico","GET","",500,"ssbhp-1741725259208-13cead17c8cf","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",182,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:19",1741725259226,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.ico","GET","",-1,"2wx4n-1741725258651-6baf9dbe11ee","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.
+Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:19",1741725259123,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",-1,"b6wdp-1741725258870-54825b21cd56","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:18",1741725258906,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",500,"b6wdp-1741725258870-54825b21cd56","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",199,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:18",1741725258747,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",-1,"lvms8-1741725258444-3ab5278a9ee0","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:18",1741725258687,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/favicon.ico","GET","",500,"2wx4n-1741725258651-6baf9dbe11ee","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",193,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:18",1741725258539,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",-1,"9p5wg-1741725258289-3b6aa91ece49","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:18",1741725258479,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",500,"lvms8-1741725258444-3ab5278a9ee0","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",198,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:18",1741725258325,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",500,"9p5wg-1741725258289-3b6aa91ece49","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",193,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:18",1741725258166,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",-1,"fvzkr-1741725257901-fa429345172d","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:17",1741725257945,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",500,"fvzkr-1741725257901-fa429345172d","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",203,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:16",1741725256307,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",-1,"wh7ks-1741725256044-34c29f6514c9","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:16",1741725256083,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",500,"wh7ks-1741725256044-34c29f6514c9","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",197,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:15",1741725255782,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",-1,"b6w6q-1741725255426-e157eb83de20","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:15",1741725255551,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",500,"b6w6q-1741725255426-e157eb83de20","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",204,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:14",1741725254919,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",-1,"tc688-1741725254550-9a8b1b437e30","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:14",1741725254699,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",500,"tc688-1741725254550-9a8b1b437e30","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",203,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:14",1741725254328,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",-1,"xm22s-1741725253855-69356bdbc911","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",-1,"iad1",-1,-1,"Traceback (most recent call last):
+File ""/var/task/vc__handler__python.py"", line 14, in <module>
+__vc_spec.loader.exec_module(__vc_module)
+File ""<frozen importlib._bootstrap_external>"", line 999, in exec_module
+File ""<frozen importlib._bootstrap>"", line 488, in _call_with_frames_removed
+File ""/var/task/api/test_index.py"", line 1, in <module>
+from test_app import test_app as app
+ModuleNotFoundError: No module named 'test_app'
+Python process exited with exit status: 1. The logs above can help with debugging the issue.","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"
+"2025-03-11 20:34:14",1741725254099,"ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app/","GET","",500,"xm22s-1741725253855-69356bdbc911","vercel-screenshot/1.0","error","production","main","MISS","lambda","/api/test_index.py","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","ai-hedgefund-i1yluewzo-charles-haworths-projects.vercel.app","dpl_G9hKNCvfvMk9NPpHV1o4KyBn5Pt3",201,"iad1",43,1024,"","prj_23fjNbGZF9n2fyYRxopyYfccCOPn"

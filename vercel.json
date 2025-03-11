@@ -2,15 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/test_index.py",
-      "use": "@vercel/python",
-      "config": { "runtime": "python3.9" }
+      "src": "api/test_app.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/test_index.py"
+      "dest": "/api/test_app.py"
     }
   ],
   "env": {

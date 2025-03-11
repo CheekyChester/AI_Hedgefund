@@ -3,8 +3,16 @@ import sys
 import traceback
 from flask import Flask, jsonify, request
 
+# Add parent directory to path so imports work correctly
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 # Create a minimal test app
-test_app = Flask(__name__)
+test_app = Flask(__name__, 
+                template_folder='../templates',
+                static_folder='../static')
+
+# For Vercel - export the Flask app
+app = test_app
 
 @test_app.route('/')
 def home():

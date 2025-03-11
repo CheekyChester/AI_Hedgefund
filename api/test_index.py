@@ -1,3 +1,4 @@
-from test_app import test_app as app
+# Import the Flask app from the local module
+from api.test_app import test_app as app
 
-# This is a minimal test entry point for Vercel
+# This is a test entry point for Vercel
