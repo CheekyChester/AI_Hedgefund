@@ -4,7 +4,7 @@ import json
 import logging
 import time
 import traceback
-from flask import Flask, render_template, request, jsonify, send_file, abort, session, Response
+from flask import Flask, render_template, request, jsonify, send_file, abort, session, Response, stream_with_context
 from io import BytesIO
 import base64
 import uuid
@@ -206,6 +206,15 @@ def index():
     else:
         return render_template('index.html')
 
+@app.route('/streaming')
+def streaming():
+    """Streaming version of the analysis page"""
+    api_key = storage.get_api_key()
+    if not api_key:
+        return render_template('setup.html')
+    else:
+        return render_template('streaming.html')
+
 @app.route('/setup', methods=['POST'])
 def setup():
     """Save API key"""
@@ -236,16 +245,53 @@ def analyze():
     set_api_key_env(api_key)
     
     try:
-        # Import here to ensure we have the latest version with the updated API key
-        from ai_hedge_fund import generate_html_report
+        # Log request to help with debugging
+        logger.info(f"Starting analysis for ticker: {ticker} with API key starting with {api_key[:5]}...")
         
-        # Run analysis directly, not using the run_ai_hedge_fund function which tries to save to disk
-        logger.info(f"Starting analysis for ticker: {ticker} with API key: {api_key[:5]}...")
-        
-        # Import sequential_agent directly to run the chain
-        from ai_hedge_fund import sequential_agent
-        
+        # Pre-check imports
+        import_errors = []
         try:
+            from ai_hedge_fund import generate_html_report, sequential_agent
+        except ImportError as ie:
+            import_errors.append(f"Failed to import from ai_hedge_fund: {str(ie)}")
+            logger.error(f"Import error: {str(ie)}", exc_info=True)
+            return jsonify({
+                'success': False, 
+                'message': f"Import error: {str(ie)}",
+                'errors': import_errors
+            }), 500
+        
+        # Check environment variables
+        environment_info = {
+            'has_api_key': bool(api_key),
+            'path': sys.path,
+            'cwd': os.getcwd(),
+            'python_version': sys.version,
+            'env_keys': list(os.environ.keys())
+        }
+        logger.info(f"Environment info: {environment_info}")
+        
+        # Run the analysis with a simplified approach
+        try:
+            # First, create a mock response to test if basic functionality works
+            mock_html = f"""
+            <!DOCTYPE html>
+            <html>
+            <head><title>Test Report for {ticker.upper()}</title></head>
+            <body>
+                <h1>Test Report for {ticker.upper()}</h1>
+                <p>This is a simplified test report to check if basic functionality works.</p>
+                <p>API Key: {api_key[:3]}...{api_key[-3:]}</p>
+            </body>
+            </html>
+            """
+            
+            # Save this test report
+            test_filename = f"test_report_{ticker.upper()}_{time.strftime('%Y%m%d_%H%M%S')}.html"
+            storage.save_report(ticker.upper(), mock_html)
+            
+            # Now try the real analysis
+            logger.info(f"Starting real analysis for {ticker.upper()}...")
             result = sequential_agent({"ticker": ticker.upper()})
             
             # Generate HTML content
@@ -262,7 +308,29 @@ def analyze():
         except Exception as inner_e:
             error_msg = str(inner_e)
             logger.error(f"Error in sequential_agent or generate_html_report: {error_msg}", exc_info=True)
-            return jsonify({'success': False, 'message': f'Error during analysis: {error_msg[:200]}...'}), 500
+            
+            # Check if the error is due to timeout
+            if "timed out" in error_msg.lower() or "deadline" in error_msg.lower():
+                return jsonify({
+                    'success': False, 
+                    'message': 'Analysis timed out. Vercel has a 10-second execution limit for serverless functions. Try using the Docker version for unlimited analysis time.',
+                    'error': error_msg[:200]
+                }), 504
+                
+            # Return the test report if we at least got that far
+            if 'test_filename' in locals():
+                return jsonify({
+                    'success': False, 
+                    'message': f'Error during analysis, but created a test report: {test_filename}. Error: {error_msg[:200]}',
+                    'filename': test_filename,
+                    'is_test': True
+                }), 500
+            else:
+                return jsonify({
+                    'success': False, 
+                    'message': f'Error during analysis: {error_msg[:200]}',
+                    'error_details': traceback.format_exc()[:500]
+                }), 500
             
     except Exception as e:
         error_msg = str(e)
@@ -273,8 +341,18 @@ def analyze():
             return jsonify({'success': False, 'message': 'API key authentication failed. Please verify your Perplexity API key is valid and try again.'}), 401
         elif "429" in error_msg or "Too Many Requests" in error_msg:
             return jsonify({'success': False, 'message': 'Rate limit exceeded for the Perplexity API. Please try again later.'}), 429
+        elif "timed out" in error_msg.lower() or "deadline" in error_msg.lower():
+            return jsonify({
+                'success': False, 
+                'message': 'Analysis timed out. Vercel has a 10-second execution limit for serverless functions. Try using the Docker version for unlimited analysis time.',
+                'error': error_msg[:200]
+            }), 504
         else:
-            return jsonify({'success': False, 'message': f'Error: {error_msg[:200]}...'}), 500
+            return jsonify({
+                'success': False, 
+                'message': f'Error: {error_msg[:200]}',
+                'traceback': traceback.format_exc()[:500]
+            }), 500
 
 @app.route('/report/<path:filename>')
 def view_report(filename):
@@ -314,16 +392,57 @@ def debug():
         # Try importing key modules
         import_results = {}
         
-        for module in ['ai_hedge_fund', 'langchain', 'dotenv', 'flask']:
+        for module in ['ai_hedge_fund', 'langchain', 'langchain_community', 'dotenv', 'flask', 'openai', 'typing_inspect']:
             try:
                 __import__(module)
                 import_results[module] = "success"
             except Exception as e:
                 import_results[module] = f"error: {str(e)}"
         
+        # Try importing specifically from ai_hedge_fund
+        ai_hedge_fund_details = {}
+        try:
+            import ai_hedge_fund
+            ai_hedge_fund_details = {
+                "imported": True,
+                "version": getattr(ai_hedge_fund, "__version__", "Not set"),
+                "available_functions": [f for f in dir(ai_hedge_fund) if not f.startswith("_")],
+                "has_sequential_agent": hasattr(ai_hedge_fund, "sequential_agent"),
+                "has_generate_html_report": hasattr(ai_hedge_fund, "generate_html_report"),
+                "file_path": getattr(ai_hedge_fund, "__file__", "Unknown")
+            }
+        except Exception as e:
+            ai_hedge_fund_details = {
+                "imported": False,
+                "error": str(e)
+            }
+        
         # Directory structure
         api_dir = os.path.abspath(os.path.dirname(__file__))
         parent_dir = os.path.abspath(os.path.join(api_dir, '..'))
+        
+        # Check for API key and test it
+        api_key = storage.get_api_key()
+        api_key_status = "Not set"
+        if api_key:
+            api_key_status = f"Set (length: {len(api_key)}, starts with: {api_key[:3]}...)"
+            # Try setting it
+            try:
+                set_api_key_env(api_key)
+                api_key_status += ", Successfully set in environment"
+            except Exception as e:
+                api_key_status += f", Error setting: {str(e)}"
+        
+        # Memory usage info (only available on some systems)
+        memory_info = {}
+        try:
+            import resource
+            memory_info = {
+                "max_rss_kb": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+                "current_rss_kb": resource.getrusage(resource.RUSAGE_SELF).ru_idrss
+            }
+        except (ImportError, AttributeError):
+            memory_info = {"error": "resource module not available"}
         
         return jsonify({
             "status": "ok",
@@ -331,11 +450,22 @@ def debug():
             "current_dir": os.getcwd(),
             "dir_listing": os.listdir(),
             "imports": import_results,
-            "environment": {k: v for k, v in os.environ.items() if k.startswith(('PYTHONPATH', 'VERCEL', 'FLASK'))},
+            "ai_hedge_fund_details": ai_hedge_fund_details,
+            "environment": {k: v for k, v in os.environ.items() if k.startswith(('PYTHONPATH', 'VERCEL', 'FLASK', 'PPLX'))},
             "session_data": {
                 "has_api_key": 'api_key' in session,
+                "api_key_status": api_key_status,
                 "has_reports": 'reports' in session,
-                "report_count": len(session.get('reports', {})) if 'reports' in session else 0
+                "report_count": len(session.get('reports', {})) if 'reports' in session else 0,
+                "reports_index": session.get('report_index', [])[:5] if 'report_index' in session else []
+            },
+            "sys_path": sys.path,
+            "memory_info": memory_info,
+            "vercel_info": {
+                "is_vercel": is_vercel,
+                "region": os.environ.get("VERCEL_REGION", "unknown"),
+                "environment": os.environ.get("VERCEL_ENV", "unknown"),
+                "project_id": os.environ.get("VERCEL_PROJECT_ID", "unknown")
             }
         })
     except Exception as e:
@@ -344,6 +474,76 @@ def debug():
             "error": str(e),
             "traceback": traceback.format_exc()
         })
+
+# Streaming routes
+from api.streaming import start_analysis_job, stream_job_status, get_job_status
+
+@app.route('/start-streaming-analysis', methods=['POST'])
+def start_streaming_analysis():
+    """Start a streaming analysis job"""
+    ticker = request.form.get('ticker')
+    if not ticker:
+        return jsonify({'success': False, 'message': 'Ticker symbol is required'}), 400
+    
+    # Verify API key is set
+    api_key = storage.get_api_key()
+    if not api_key:
+        return jsonify({'success': False, 'message': 'API key is not set or invalid. Please reload the page and set up your API key.'}), 400
+    
+    try:
+        # Start the job
+        job_id = start_analysis_job(ticker, api_key)
+        
+        return jsonify({
+            'success': True,
+            'job_id': job_id,
+            'message': f'Analysis started for {ticker}'
+        })
+    except Exception as e:
+        logger.error(f"Error starting analysis: {str(e)}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'message': f'Error starting analysis: {str(e)}'
+        }), 500
+
+@app.route('/stream-job-status/<job_id>')
+def stream_status(job_id):
+    """Stream the status of a job"""
+    return stream_job_status(job_id)
+
+@app.route('/job-result/<job_id>')
+def job_result(job_id):
+    """Get the final HTML result of a job"""
+    job = get_job_status(job_id)
+    
+    if not job:
+        return jsonify({'success': False, 'message': 'Job not found'}), 404
+    
+    if not job.get('complete'):
+        return jsonify({'success': False, 'message': 'Job not complete yet'}), 400
+    
+    if job.get('status') == 'error':
+        return jsonify({
+            'success': False, 
+            'message': 'Job failed', 
+            'errors': job.get('errors', [])
+        }), 500
+    
+    if job.get('html_content') and job.get('filename'):
+        # Save the report in session storage
+        filename = job.get('filename')
+        html_content = job.get('html_content')
+        storage.save_report(job.get('ticker', 'UNKNOWN'), html_content)
+        
+        return jsonify({
+            'success': True,
+            'filename': filename
+        })
+    
+    return jsonify({
+        'success': False,
+        'message': 'No report generated'
+    }), 500
 
 # Main function for local development
 if __name__ == '__main__':
