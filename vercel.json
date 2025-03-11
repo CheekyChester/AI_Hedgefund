@@ -2,19 +2,19 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/test_app.py",
+      "src": "api/main_app.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/test_app.py"
+      "dest": "/api/main_app.py"
     }
   ],
   "env": {
     "PYTHONPATH": ".",
     "VERCEL": "1",
-    "FLASK_SECRET_KEY": "change-this-to-a-secure-secret"
+    "FLASK_SECRET_KEY": "change-this-to-a-secure-secret-string-in-vercel-dashboard"
   }
 }
