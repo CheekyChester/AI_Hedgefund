@@ -444,6 +444,10 @@ def generate_html_report(result: dict, ticker: str) -> str:
             if start_idx >= 0 and end_idx >= 0:
                 text = text[:start_idx] + text[end_idx + 8:]
         
+        # Remove ```html and ``` markers that might be in the text
+        text = text.replace('```html', '')
+        text = text.replace('```', '')
+        
         # Process markdown tables
         if '|' in text and '-|-' in text:
             # Find table sections
@@ -523,35 +527,110 @@ def generate_html_report(result: dict, ticker: str) -> str:
     def convert_markdown_table_to_html(markdown_table):
         """Convert a markdown table to HTML table"""
         lines = markdown_table.strip().split('\n')
+        
+        # Check if this is a valid markdown table
+        is_valid = False
+        for line in lines:
+            if line.strip().startswith('|') and line.strip().endswith('|'):
+                is_valid = True
+                break
+        
+        if not is_valid:
+            # Not a valid markdown table, return as is
+            return markdown_table
+        
+        # Find the separator row (row with dashes)
+        separator_row_index = -1
+        for i, line in enumerate(lines):
+            if i > 0 and '---' in line and line.strip().startswith('|'):
+                separator_row_index = i
+                break
+        
+        # If no separator row found, assume a simplified table format
+        # where the first row is header and the rest are body
+        if separator_row_index == -1:
+            separator_row_index = 0
+        
+        # Clean up the table rows - remove empty or separator-only rows
+        valid_lines = []
+        for i, line in enumerate(lines):
+            # Skip empty lines
+            if not line.strip():
+                continue
+            # Skip separator line
+            if i == separator_row_index:
+                continue
+            # Only include lines with actual content
+            if '|' in line and not all(cell.strip() in ['', '-', ''] for cell in line.split('|')):
+                valid_lines.append(line)
+        
+        # Begin table HTML
         html_table = '<table class="data-table">\n'
         
-        # Process header
-        header_row = lines[0].strip()
-        headers = [cell.strip() for cell in header_row.split('|')[1:-1]]  # Remove empty first/last cells
-        html_table += '  <thead>\n    <tr>\n'
-        for header in headers:
-            # Remove markdown formatting from headers
-            clean_header = header.replace('**', '').replace('<strong>', '').replace('</strong>', '')
-            html_table += f'      <th>{clean_header}</th>\n'
-        html_table += '    </tr>\n  </thead>\n'
+        # Process header (first row)
+        if len(valid_lines) > 0:
+            header_row = valid_lines[0].strip()
+            headers = [cell.strip() for cell in header_row.split('|')]
+            # Remove empty first/last cells if they exist
+            if headers[0] == '':
+                headers = headers[1:]
+            if headers[-1] == '':
+                headers = headers[:-1]
+                
+            # Filter out completely empty headers and headers that are just separators
+            headers = [h for h in headers if h.strip() != '' and not all(c == '-' for c in h.strip())]
+            
+            # Create header
+            html_table += '  <thead>\n    <tr>\n'
+            for header in headers:
+                # Remove markdown formatting from headers
+                clean_header = header.replace('**', '').replace('<strong>', '').replace('</strong>', '')
+                html_table += f'      <th>{clean_header}</th>\n'
+            html_table += '    </tr>\n  </thead>\n'
         
-        # Process body rows (skip header row and separator row)
+        # Process body rows
         html_table += '  <tbody>\n'
-        for i, line in enumerate(lines):
-            if i == 0 or i == 1 or not line.strip():  # Skip header and separator
+        for i, line in enumerate(valid_lines):
+            if i == 0:  # Skip header row
                 continue
-            cells = [cell.strip() for cell in line.split('|')[1:-1]]
+                
+            # Split the line into cells
+            cells = [cell.strip() for cell in line.split('|')]
+            # Remove empty first/last cells if they exist
+            if cells[0] == '':
+                cells = cells[1:]
+            if cells[-1] == '':
+                cells = cells[:-1]
+                
+            # Filter out completely empty cells and rows that are just separators
+            cells = [c for c in cells if c.strip() != '' and not all(ch == '-' for ch in c.strip())]
+            if not cells:
+                continue
+                
+            # Create table row
             html_table += '    <tr>\n'
+            
+            # If we have fewer cells than headers, add empty cells to fill
+            if len(headers) > len(cells):
+                cells.extend([''] * (len(headers) - len(cells)))
+            
+            # If we have more cells than headers, use a reasonable number of columns (don't truncate data)
+            column_count = max(len(headers), min(6, len(cells))) if len(headers) > 0 else min(6, len(cells))
+            cells = cells[:column_count]
+            
             for cell in cells:
-                # Preserve bold formatting in cells
-                cell = cell.replace('**', '<strong>').replace('<strong><strong>', '<strong>')
+                # Process cell content (preserve formatting)
+                processed_cell = cell.replace('**', '<strong>').replace('<strong><strong>', '<strong>')
+                
                 # Balance strong tags
-                open_count = cell.count('<strong>')
-                close_count = cell.count('</strong>')
+                open_count = processed_cell.count('<strong>')
+                close_count = processed_cell.count('</strong>')
                 if open_count > close_count:
-                    cell += '</strong>' * (open_count - close_count)
-                html_table += f'      <td>{cell}</td>\n'
+                    processed_cell += '</strong>' * (open_count - close_count)
+                    
+                html_table += f'      <td>{processed_cell}</td>\n'
             html_table += '    </tr>\n'
+            
         html_table += '  </tbody>\n</table>\n'
         
         return html_table

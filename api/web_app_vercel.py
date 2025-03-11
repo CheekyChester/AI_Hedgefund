@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import logging
 import time
@@ -7,6 +8,15 @@ from io import BytesIO
 import base64
 import uuid
 from dotenv import load_dotenv
+
+# Add parent directory to path so imports work correctly
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Basic error handling for startup
+try:
+    import ai_hedge_fund
+except Exception as e:
+    logging.error(f"Failed to import ai_hedge_fund: {str(e)}")
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
