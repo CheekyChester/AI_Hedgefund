@@ -483,12 +483,27 @@
             let stagnantUpdates = 0;
             let lastUpdateTime = Date.now();
             
+            // Show server status in UI
+            function showStatus(msg, isError = false) {
+                const statusElem = document.getElementById('statusMessage');
+                if (statusElem) {
+                    statusElem.textContent = msg;
+                    if (isError) statusElem.style.color = 'red';
+                    else statusElem.style.color = '';
+                }
+                console.log(`Job ${jobId} status: ${msg}`);
+            }
+            
             function doPoll() {
                 if (!polling) return;
                 
                 pollAttempts++;
+                showStatus(`Polling server (attempt ${pollAttempts})...`);
                 
-                fetch(`/stream-job-status/${jobId}`)
+                // Add a unique query parameter to prevent caching
+                const url = `/stream-job-status/${jobId}?_=${Date.now()}`;
+                
+                fetch(url)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -498,6 +513,8 @@
                     .then(data => {
                         // Reset the poll attempt counter on successful response
                         pollAttempts = 0;
+                        
+                        console.log('Received job data:', data);
                         
                         // Track when updates are happening
                         if (data.last_updated) {
@@ -509,9 +526,11 @@
                         // Check for stagnant progress
                         if (data.progress === lastProgress) {
                             stagnantUpdates++;
+                            showStatus(`Processing ${data.status} (no progress change for ${stagnantUpdates} polls)`);
                         } else {
                             stagnantUpdates = 0;
                             lastProgress = data.progress;
+                            showStatus(`Processing ${data.status}`);
                         }
                         
                         // Update UI with current status
@@ -570,8 +589,23 @@
                             loadingIndicator.style.display = 'none';
                             analyzeBtn.disabled = false;
                             showError('Lost connection to the server. Please try again later.');
+                            
+                            // Debug info for tracing problem
+                            console.error(`Polling for job ${jobId} failed after ${pollAttempts} attempts.`);
+                            
+                            // Try to get debug info
+                            fetch('/debug')
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log('Debug info:', data);
+                                    if (data.session_data && !data.session_data.has_jobs) {
+                                        showError('Session not persisting job data. Please try refreshing the page.', true);
+                                    }
+                                })
+                                .catch(err => console.error('Failed to get debug info:', err));
                         } else {
                             // Try again with increased interval
+                            showStatus(`Retrying in ${Math.round(pollInterval/1000)} seconds...`);
                             setTimeout(doPoll, pollInterval);
                         }
                     });

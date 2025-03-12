@@ -42,9 +42,14 @@ def save_job(job_id, job_data):
                 except (TypeError, OverflowError):
                     serializable_job[key] = str(value)
         
+        # Ensure API key is kept - this is critical
+        if 'api_key' in job_data and job_data['api_key']:
+            serializable_job['api_key'] = job_data['api_key']
+            
         # Store in session
         session['jobs'][job_id] = serializable_job
-        logger.info(f"Saved job {job_id} to session storage")
+        session.modified = True  # Explicitly mark session as modified to ensure it's saved
+        logger.info(f"Saved job {job_id} to session storage, keys: {', '.join(serializable_job.keys())}")
         return True
     else:
         # In development, use the in-memory dictionary
@@ -698,20 +703,36 @@ def stream_job_status(job_id):
         
         # If job is not complete and not in error state, try to process the next step
         if (not job.get('complete', False) and 
-            job.get('status') != 'error' and 
-            job.get('api_key')):
+            job.get('status') != 'error'):
             
-            # Only process a step if it's been at least 5 seconds since the last update
-            if current_time - job.get('last_updated', 0) > 5:
+            # Get the API key - required for processing
+            api_key = job.get('api_key')
+            
+            # Log detailed info regardless of whether we process a step
+            logger.info(f"Job {job_id} status check - ticker: {job.get('ticker')}, " +
+                      f"status: {job.get('status')}, progress: {job.get('progress')}%, " +
+                      f"elapsed: {round(current_time - job.get('started_at', current_time), 1)}s, " +
+                      f"last_updated: {round(current_time - job.get('last_updated', current_time), 1)}s ago, " +
+                      f"has_api_key: {bool(api_key)}")
+            
+            # Only process if we have an API key
+            if api_key:
+                # Process a step regardless of timing - Vercel serverless needs to make progress on each poll
+                # since we can't rely on background processing
                 try:
                     # Process one step of the job
-                    process_analysis_step(job_id, job.get('ticker'), job.get('api_key'))
+                    logger.info(f"Processing next step for job {job_id} on status check")
+                    process_analysis_step(job_id, job.get('ticker'), api_key)
                     # Get updated job state
                     job = get_job(job_id)
                     if not job:
+                        logger.error(f"Job {job_id} lost during processing step")
                         return jsonify({'error': 'Job lost during processing'})
+                    logger.info(f"Successfully processed step for job {job_id}, new progress: {job.get('progress')}%")
                 except Exception as e:
-                    logger.error(f"Error processing step during status check: {str(e)}")
+                    logger.error(f"Error processing step during status check for job {job_id}: {str(e)}")
+            else:
+                logger.error(f"Cannot process job {job_id} - API key missing from job data")
         
         # Prepare status data for response
         status_data = {

@@ -479,8 +479,13 @@ def debug():
                 "has_api_key": 'api_key' in session,
                 "api_key_status": api_key_status,
                 "has_reports": 'reports' in session,
+                "has_jobs": 'jobs' in session,
+                "job_count": len(session.get('jobs', {})) if 'jobs' in session else 0,
+                "job_ids": list(session.get('jobs', {}).keys()) if 'jobs' in session else [],
                 "report_count": len(session.get('reports', {})) if 'reports' in session else 0,
-                "reports_index": session.get('report_index', [])[:5] if 'report_index' in session else []
+                "reports_index": session.get('report_index', [])[:5] if 'report_index' in session else [],
+                "session_keys": list(session.keys()),
+                "session_id": session.get('_id', 'None')
             },
             "active_jobs": jobs_info,
             "sys_path": sys.path,
@@ -537,6 +542,7 @@ def list_jobs():
         })
 
 # Streaming routes
+from flask import session  # Ensure session is properly imported
 from api.streaming import start_analysis_job, stream_job_status, get_job_status
 
 @app.route('/start-streaming-analysis', methods=['POST'])
