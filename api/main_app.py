@@ -447,8 +447,9 @@ def debug():
         # Check jobs from streaming module
         jobs_info = []
         try:
-            from api.streaming import active_jobs
-            for job_id, job in active_jobs.items():
+            from api.streaming import get_all_jobs
+            jobs_dict = get_all_jobs()
+            for job_id, job in jobs_dict.items():
                 current_time = time.time()
                 jobs_info.append({
                     "job_id": job_id,
@@ -502,12 +503,13 @@ def debug():
 def list_jobs():
     """List all active streaming jobs"""
     try:
-        from api.streaming import active_jobs
+        from api.streaming import get_all_jobs
         
+        jobs_dict = get_all_jobs()
         jobs_list = []
         current_time = time.time()
         
-        for job_id, job in active_jobs.items():
+        for job_id, job in jobs_dict.items():
             jobs_list.append({
                 "job_id": job_id,
                 "ticker": job.get("ticker", "unknown"),
