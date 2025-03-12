@@ -476,14 +476,45 @@
         // Poll the job status endpoint (for Vercel)
         function pollJobStatus(jobId, ticker) {
             let polling = true;
-            let pollInterval = 2000; // Poll every 2 seconds
+            let pollInterval = 2000; // Initial poll interval: 2 seconds
+            let maxPollInterval = 10000; // Maximum poll interval: 10 seconds
+            let pollAttempts = 0;
+            let lastProgress = 0;
+            let stagnantUpdates = 0;
+            let lastUpdateTime = Date.now();
             
             function doPoll() {
                 if (!polling) return;
                 
+                pollAttempts++;
+                
                 fetch(`/stream-job-status/${jobId}`)
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
+                        // Reset the poll attempt counter on successful response
+                        pollAttempts = 0;
+                        
+                        // Track when updates are happening
+                        if (data.last_updated) {
+                            lastUpdateTime = data.last_updated * 1000; // Convert to milliseconds
+                        } else {
+                            lastUpdateTime = Date.now();
+                        }
+                        
+                        // Check for stagnant progress
+                        if (data.progress === lastProgress) {
+                            stagnantUpdates++;
+                        } else {
+                            stagnantUpdates = 0;
+                            lastProgress = data.progress;
+                        }
+                        
+                        // Update UI with current status
                         updateUI(data);
                         
                         // Check if job is complete
@@ -503,16 +534,46 @@
                                 showError('Unexpected status: ' + data.status);
                             }
                         } else {
-                            // Schedule next poll
-                            setTimeout(doPoll, pollInterval);
+                            // Adjust poll interval based on progress activity
+                            // If no progress change for a while, slow down polling
+                            if (stagnantUpdates > 5) {
+                                pollInterval = Math.min(pollInterval * 1.5, maxPollInterval);
+                            } else {
+                                // Reset to faster polling when progress changes
+                                pollInterval = 2000;
+                            }
+                            
+                            // Check for job timeout - 10 minutes (600000ms)
+                            const now = Date.now();
+                            const timeSinceLastUpdate = now - lastUpdateTime;
+                            
+                            if (timeSinceLastUpdate > 600000) {
+                                // Job may be stuck
+                                polling = false;
+                                analyzeBtn.disabled = false;
+                                showError('Analysis appears to be stuck. The server has not updated in over 10 minutes. Please try again later.');
+                            } else {
+                                // Schedule next poll
+                                setTimeout(doPoll, pollInterval);
+                            }
                         }
                     })
                     .catch(error => {
                         console.error('Error polling job status:', error);
-                        polling = false;
-                        loadingIndicator.style.display = 'none';
-                        analyzeBtn.disabled = false;
-                        showError('Error checking analysis status. Please try again.');
+                        
+                        // Increase poll interval on error, up to max
+                        pollInterval = Math.min(pollInterval * 1.5, maxPollInterval);
+                        
+                        // After 10 failed attempts, give up
+                        if (pollAttempts >= 10) {
+                            polling = false;
+                            loadingIndicator.style.display = 'none';
+                            analyzeBtn.disabled = false;
+                            showError('Lost connection to the server. Please try again later.');
+                        } else {
+                            // Try again with increased interval
+                            setTimeout(doPoll, pollInterval);
+                        }
                     });
             }
             

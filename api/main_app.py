@@ -444,8 +444,30 @@ def debug():
         except (ImportError, AttributeError):
             memory_info = {"error": "resource module not available"}
         
+        # Check jobs from streaming module
+        jobs_info = []
+        try:
+            from api.streaming import active_jobs
+            for job_id, job in active_jobs.items():
+                current_time = time.time()
+                jobs_info.append({
+                    "job_id": job_id,
+                    "ticker": job.get("ticker", "unknown"),
+                    "status": job.get("status", "unknown"),
+                    "progress": job.get("progress", 0),
+                    "complete": job.get("complete", False),
+                    "elapsed_seconds": round(current_time - job.get("started_at", current_time), 1),
+                    "last_updated_seconds_ago": round(current_time - job.get("last_updated", current_time), 1),
+                    "steps": [{"name": s["name"], "status": s["status"]} for s in job.get("steps", [])],
+                    "has_errors": len(job.get("errors", [])) > 0,
+                    "error_count": len(job.get("errors", []))
+                })
+        except Exception as e:
+            jobs_info = [{"error": f"Error getting jobs: {str(e)}"}]
+        
         return jsonify({
             "status": "ok",
+            "time": time.time(),
             "python_version": sys.version,
             "current_dir": os.getcwd(),
             "dir_listing": os.listdir(),
@@ -459,6 +481,7 @@ def debug():
                 "report_count": len(session.get('reports', {})) if 'reports' in session else 0,
                 "reports_index": session.get('report_index', [])[:5] if 'report_index' in session else []
             },
+            "active_jobs": jobs_info,
             "sys_path": sys.path,
             "memory_info": memory_info,
             "vercel_info": {
@@ -473,6 +496,42 @@ def debug():
             "status": "error",
             "error": str(e),
             "traceback": traceback.format_exc()
+        })
+
+@app.route('/jobs', methods=['GET'])
+def list_jobs():
+    """List all active streaming jobs"""
+    try:
+        from api.streaming import active_jobs
+        
+        jobs_list = []
+        current_time = time.time()
+        
+        for job_id, job in active_jobs.items():
+            jobs_list.append({
+                "job_id": job_id,
+                "ticker": job.get("ticker", "unknown"),
+                "status": job.get("status", "unknown"),
+                "progress": job.get("progress", 0),
+                "complete": job.get("complete", False),
+                "elapsed_seconds": round(current_time - job.get("started_at", current_time), 1),
+                "last_updated_seconds_ago": round(current_time - job.get("last_updated", current_time), 1),
+                "error_count": len(job.get("errors", [])),
+                "steps": [{"name": s["name"], "status": s["status"]} for s in job.get("steps", [])]
+            })
+        
+        # Sort by most recent first
+        jobs_list.sort(key=lambda x: x["elapsed_seconds"])
+        
+        return jsonify({
+            "success": True,
+            "job_count": len(jobs_list),
+            "jobs": jobs_list
+        })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
         })
 
 # Streaming routes
