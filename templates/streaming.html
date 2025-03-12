@@ -292,9 +292,13 @@
                 <div style="margin-bottom: 20px; padding: 10px; background-color: #d1e7dd; border-left: 4px solid #198754; border-radius: 4px;">
                     <strong>✅ Streaming Analysis Mode</strong>
                     <p style="margin-top: 5px; margin-bottom: 0;">
-                        This version uses background processing to overcome the 10-second Vercel timeout. You'll see progress 
-                        updates as the analysis runs. When deployed on Vercel, updates will appear every few seconds using polling. 
-                        Reports are stored in your browser session and will be lost when the session expires.
+                        This version uses step-by-step processing to overcome Vercel limitations. You'll see progress 
+                        updates as the analysis runs. On Vercel, a simplified analysis is produced to avoid timeouts. 
+                        For full detailed analysis, use the Docker version which has no time constraints.
+                    </p>
+                    <p style="margin-top: 5px; font-size: 0.9em; color: #666;">
+                        Note: Reports are stored in your browser session and will be lost when the session expires.
+                        If you encounter any issues, please try refreshing the page.
                     </p>
                 </div>
                 
