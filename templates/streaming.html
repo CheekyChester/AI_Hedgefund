@@ -292,8 +292,9 @@
                 <div style="margin-bottom: 20px; padding: 10px; background-color: #d1e7dd; border-left: 4px solid #198754; border-radius: 4px;">
                     <strong>✅ Streaming Analysis Mode</strong>
                     <p style="margin-top: 5px; margin-bottom: 0;">
-                        This version uses streaming to overcome the 10-second Vercel timeout. You'll see real-time progress 
-                        as the analysis runs. Reports are still stored in your browser session and will be lost when the session expires.
+                        This version uses background processing to overcome the 10-second Vercel timeout. You'll see progress 
+                        updates as the analysis runs. When deployed on Vercel, updates will appear every few seconds using polling. 
+                        Reports are stored in your browser session and will be lost when the session expires.
                     </p>
                 </div>
                 
@@ -460,55 +461,72 @@
         
         // Listen for job updates
         function listenForJobUpdates(jobId, ticker) {
+            // Check if we're running on Vercel by looking at the hostname
+            const isVercel = window.location.hostname.includes('vercel.app');
+            
+            if (isVercel) {
+                // Use polling on Vercel instead of SSE
+                pollJobStatus(jobId, ticker);
+            } else {
+                // Use EventSource for local development
+                useEventSource(jobId, ticker);
+            }
+        }
+        
+        // Poll the job status endpoint (for Vercel)
+        function pollJobStatus(jobId, ticker) {
+            let polling = true;
+            let pollInterval = 2000; // Poll every 2 seconds
+            
+            function doPoll() {
+                if (!polling) return;
+                
+                fetch(`/stream-job-status/${jobId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        updateUI(data);
+                        
+                        // Check if job is complete
+                        if (data.complete) {
+                            polling = false;
+                            
+                            if (data.status === 'error') {
+                                // Handle error
+                                analyzeBtn.disabled = false;
+                                showError('Error during analysis: ' + (data.errors && data.errors.length > 0 ? data.errors[0] : 'Unknown error'));
+                            } else if (data.status === 'complete' && data.filename) {
+                                // Get the final result
+                                fetchFinalResult(jobId, ticker);
+                            } else {
+                                // Handle unexpected state
+                                analyzeBtn.disabled = false;
+                                showError('Unexpected status: ' + data.status);
+                            }
+                        } else {
+                            // Schedule next poll
+                            setTimeout(doPoll, pollInterval);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error polling job status:', error);
+                        polling = false;
+                        loadingIndicator.style.display = 'none';
+                        analyzeBtn.disabled = false;
+                        showError('Error checking analysis status. Please try again.');
+                    });
+            }
+            
+            // Start polling
+            doPoll();
+        }
+        
+        // Use EventSource for local development
+        function useEventSource(jobId, ticker) {
             const eventSource = new EventSource(`/stream-job-status/${jobId}`);
             
             eventSource.onmessage = function(event) {
                 const data = JSON.parse(event.data);
-                
-                // Update progress
-                if (data.progress !== undefined) {
-                    progressBar.style.width = `${data.progress}%`;
-                    progressPercent.textContent = `${data.progress}%`;
-                }
-                
-                // Update status message
-                if (data.status) {
-                    let statusText = 'Processing...';
-                    switch (data.status) {
-                        case 'initialized':
-                            statusText = 'Initializing analysis...';
-                            break;
-                        case 'running':
-                            statusText = 'Running analysis...';
-                            break;
-                        case 'analyzing':
-                            statusText = 'Analyzing data...';
-                            break;
-                        case 'complete':
-                            statusText = 'Analysis complete!';
-                            break;
-                        case 'error':
-                            statusText = 'Error during analysis';
-                            break;
-                    }
-                    statusMessage.textContent = statusText;
-                }
-                
-                // Update elapsed time
-                if (data.elapsed) {
-                    elapsedTime.textContent = `${data.elapsed}s`;
-                }
-                
-                // Update step statuses
-                if (data.steps) {
-                    for (const step of data.steps) {
-                        const element = stepElements[step.name];
-                        if (element) {
-                            element.textContent = step.status.charAt(0).toUpperCase() + step.status.slice(1);
-                            element.className = `step-status step-status-${step.status}`;
-                        }
-                    }
-                }
+                updateUI(data);
                 
                 // Check if job is complete
                 if (data.complete) {
@@ -535,6 +553,54 @@
                 analyzeBtn.disabled = false;
                 showError('Connection to server lost. Please try again.');
             };
+        }
+        
+        // Update UI with job status data
+        function updateUI(data) {
+            // Update progress
+            if (data.progress !== undefined) {
+                progressBar.style.width = `${data.progress}%`;
+                progressPercent.textContent = `${data.progress}%`;
+            }
+            
+            // Update status message
+            if (data.status) {
+                let statusText = 'Processing...';
+                switch (data.status) {
+                    case 'initialized':
+                        statusText = 'Initializing analysis...';
+                        break;
+                    case 'running':
+                        statusText = 'Running analysis...';
+                        break;
+                    case 'analyzing':
+                        statusText = 'Analyzing data...';
+                        break;
+                    case 'complete':
+                        statusText = 'Analysis complete!';
+                        break;
+                    case 'error':
+                        statusText = 'Error during analysis';
+                        break;
+                }
+                statusMessage.textContent = statusText;
+            }
+            
+            // Update elapsed time
+            if (data.elapsed) {
+                elapsedTime.textContent = `${data.elapsed}s`;
+            }
+            
+            // Update step statuses
+            if (data.steps) {
+                for (const step of data.steps) {
+                    const element = stepElements[step.name];
+                    if (element) {
+                        element.textContent = step.status.charAt(0).toUpperCase() + step.status.slice(1);
+                        element.className = `step-status step-status-${step.status}`;
+                    }
+                }
+            }
         }
         
         // Fetch final result

@@ -4,7 +4,7 @@ import threading
 import uuid
 import os
 import logging
-from flask import Response, stream_with_context
+from flask import Response, stream_with_context, jsonify
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -209,48 +209,74 @@ def run_analysis_in_background(job_id, ticker, api_key):
         job['complete'] = True
 
 def stream_job_status(job_id):
-    """Stream the status of a job as server-sent events"""
-    def generate():
+    """Stream the status of a job as server-sent events 
+    
+    IMPORTANT: On Vercel, this will only send a single update due to serverless limitations
+    The client will need to poll using AJAX calls to get continuous updates"""
+    
+    # Check if we're running on Vercel
+    is_vercel = os.environ.get('VERCEL') == '1'
+    
+    if is_vercel:
+        # On Vercel, just return the current status once (client will poll)
         job = active_jobs.get(job_id)
         if not job:
-            # Job not found
-            yield f"data: {json.dumps({'error': 'Job not found'})}\n\n"
-            return
+            return jsonify({'error': 'Job not found'})
         
-        # Initial status
-        yield f"data: {json.dumps({'status': job['status'], 'progress': job['progress']})}\n\n"
-        
-        # Stream updates until job is complete
-        start_time = time.time()
-        timeout = 300  # 5 minutes timeout
-        
-        while not job.get('complete', False) and (time.time() - start_time) < timeout:
-            time.sleep(1)  # Check every second
-            
-            # Send current status
-            status_data = {
-                'status': job['status'],
-                'progress': job['progress'],
-                'steps': [{'name': s['name'], 'status': s['status']} for s in job['steps']],
-                'errors': job['errors'],
-                'filename': job['filename'],
-                'complete': job['complete'],
-                'elapsed': round(time.time() - job['started_at'], 1)
-            }
-            
-            yield f"data: {json.dumps(status_data)}\n\n"
-        
-        # Final status
-        final_data = {
+        status_data = {
             'status': job['status'],
             'progress': job['progress'],
             'steps': [{'name': s['name'], 'status': s['status']} for s in job['steps']],
             'errors': job['errors'],
             'filename': job['filename'],
-            'complete': True,
+            'complete': job['complete'],
             'elapsed': round(time.time() - job['started_at'], 1)
         }
         
-        yield f"data: {json.dumps(final_data)}\n\n"
-    
-    return Response(stream_with_context(generate()), mimetype="text/event-stream")
+        return jsonify(status_data)
+    else:
+        # For local development, use server-sent events
+        def generate():
+            job = active_jobs.get(job_id)
+            if not job:
+                # Job not found
+                yield f"data: {json.dumps({'error': 'Job not found'})}\n\n"
+                return
+            
+            # Initial status
+            yield f"data: {json.dumps({'status': job['status'], 'progress': job['progress']})}\n\n"
+            
+            # Stream updates until job is complete
+            start_time = time.time()
+            timeout = 300  # 5 minutes timeout
+            
+            while not job.get('complete', False) and (time.time() - start_time) < timeout:
+                time.sleep(1)  # Check every second
+                
+                # Send current status
+                status_data = {
+                    'status': job['status'],
+                    'progress': job['progress'],
+                    'steps': [{'name': s['name'], 'status': s['status']} for s in job['steps']],
+                    'errors': job['errors'],
+                    'filename': job['filename'],
+                    'complete': job['complete'],
+                    'elapsed': round(time.time() - job['started_at'], 1)
+                }
+                
+                yield f"data: {json.dumps(status_data)}\n\n"
+            
+            # Final status
+            final_data = {
+                'status': job['status'],
+                'progress': job['progress'],
+                'steps': [{'name': s['name'], 'status': s['status']} for s in job['steps']],
+                'errors': job['errors'],
+                'filename': job['filename'],
+                'complete': True,
+                'elapsed': round(time.time() - job['started_at'], 1)
+            }
+            
+            yield f"data: {json.dumps(final_data)}\n\n"
+        
+        return Response(stream_with_context(generate()), mimetype="text/event-stream")
