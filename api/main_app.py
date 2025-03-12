@@ -558,8 +558,23 @@ def start_streaming_analysis():
         return jsonify({'success': False, 'message': 'API key is not set or invalid. Please reload the page and set up your API key.'}), 400
     
     try:
+        # Log important values
+        logger.info(f"Starting streaming analysis for {ticker} with API key (starts with: {api_key[:5]}...)")
+        logger.info(f"Current session keys: {list(session.keys())}")
+        
+        # On Vercel, make sure API key is available for use by directly setting it
+        os.environ['PPLX_API_KEY'] = api_key
+        
         # Start the job
         job_id = start_analysis_job(ticker, api_key)
+        
+        # For Vercel: Double-check that the job was created with API key
+        from api.streaming import get_job
+        job = get_job(job_id)
+        if job and 'api_key' not in job:
+            logger.warning(f"API key missing from job {job_id} after creation - adding it directly")
+            from api.streaming import update_job
+            update_job(job_id, {'api_key': api_key})
         
         return jsonify({
             'success': True,
@@ -577,6 +592,51 @@ def start_streaming_analysis():
 def stream_status(job_id):
     """Stream the status of a job"""
     return stream_job_status(job_id)
+
+@app.route('/force-job-step/<job_id>')
+def force_job_step(job_id):
+    """Force processing of a job step (debugging endpoint)"""
+    from api.streaming import get_job, process_analysis_step, update_job
+    
+    job = get_job(job_id)
+    if not job:
+        return jsonify({'success': False, 'message': 'Job not found'}), 404
+    
+    api_key = storage.get_api_key()
+    if not api_key:
+        return jsonify({'success': False, 'message': 'API key not found in storage'}), 400
+    
+    # Force status to analyzing if it's in ready state
+    if job.get('status') == 'ready':
+        update_job(job_id, {
+            'status': 'analyzing',
+            'progress': 5,
+            'last_updated': time.time(),
+            'api_key': api_key  # Ensure API key is set
+        })
+    
+    # Force first pending step to be processed
+    try:
+        result = process_analysis_step(job_id, job.get('ticker'), api_key)
+        job = get_job(job_id)  # Get updated job
+        
+        return jsonify({
+            'success': True,
+            'processed': result,
+            'job': {
+                'status': job.get('status'),
+                'progress': job.get('progress'),
+                'steps': [{'name': s['name'], 'status': s['status']} for s in job.get('steps', [])],
+                'has_api_key': 'api_key' in job
+            }
+        })
+    except Exception as e:
+        logger.error(f"Error forcing job step: {str(e)}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'message': f'Error processing job step: {str(e)}',
+            'job_status': job.get('status')
+        }), 500
 
 @app.route('/job-result/<job_id>')
 def job_result(job_id):

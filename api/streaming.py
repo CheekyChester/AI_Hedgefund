@@ -100,6 +100,32 @@ def get_all_jobs():
         # In development, use the in-memory dictionary
         return active_jobs
 
+def cleanup_stalled_jobs():
+    """Clean up stalled jobs that haven't made progress"""
+    current_time = time.time()
+    all_jobs = get_all_jobs()
+    cleaned = 0
+    
+    for job_id, job in list(all_jobs.items()):
+        # Check if job is stalled (not complete, last updated more than 3 minutes ago)
+        if (not job.get('complete', False) and 
+            job.get('status') != 'error' and
+            current_time - job.get('last_updated', current_time) > 180):
+            
+            logger.warning(f"Cleaning up stalled job {job_id} - last updated {round(current_time - job.get('last_updated', current_time), 1)} seconds ago")
+            
+            # Update job to error state
+            job['status'] = 'error'
+            job['errors'] = job.get('errors', []) + ["Job timed out - no progress for too long"]
+            job['complete'] = True
+            job['last_updated'] = current_time
+            
+            # Save updated job
+            save_job(job_id, job)
+            cleaned += 1
+    
+    return cleaned
+
 def generate_job_id():
     """Generate a unique job ID"""
     return str(uuid.uuid4())
@@ -748,8 +774,23 @@ def stream_job_status(job_id):
         if not job:
             return jsonify({'error': 'Job not found'})
         
+        # Run cleanup of stalled jobs
+        cleanup_count = cleanup_stalled_jobs()
+        if cleanup_count > 0:
+            logger.info(f"Cleaned up {cleanup_count} stalled jobs")
+        
         # Current time to calculate elapsed time
         current_time = time.time()
+        
+        # Force ready jobs to analyzing state
+        if job.get('status') == 'ready':
+            logger.info(f"Force updating job {job_id} from 'ready' to 'analyzing' state")
+            update_job(job_id, {
+                'status': 'analyzing',
+                'progress': 5,
+                'last_updated': current_time
+            })
+            job = get_job(job_id)  # Refresh job data
         
         # ALWAYS try to process jobs unless they're complete or errored
         if not job.get('complete', False) and job.get('status') != 'error':
