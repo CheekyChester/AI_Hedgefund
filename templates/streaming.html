@@ -476,12 +476,19 @@
         // Poll the job status endpoint (for Vercel)
         function pollJobStatus(jobId, ticker) {
             let polling = true;
-            let pollInterval = 2000; // Initial poll interval: 2 seconds
-            let maxPollInterval = 10000; // Maximum poll interval: 10 seconds
+            let pollInterval = 2000; // Initial poll interval: 2 seconds - keep this short for Vercel
+            let maxPollInterval = 5000; // Maximum poll interval: 5 seconds - keep shorter for Vercel
             let pollAttempts = 0;
+            let successfulPolls = 0; // Track successful requests
             let lastProgress = 0;
             let stagnantUpdates = 0;
             let lastUpdateTime = Date.now();
+            
+            // Debug info for console
+            console.log(`Starting polling for job ${jobId}, ticker: ${ticker}`);
+            
+            // For Vercel, we need to poll more aggressively than normal
+            const isVercel = window.location.hostname.includes('vercel.app');
             
             // Show server status in UI
             function showStatus(msg, isError = false) {
@@ -511,10 +518,11 @@
                         return response.json();
                     })
                     .then(data => {
-                        // Reset the poll attempt counter on successful response
+                        // Reset the poll attempt counter and increment successful polls
                         pollAttempts = 0;
+                        successfulPolls++;
                         
-                        console.log('Received job data:', data);
+                        console.log(`Poll #${successfulPolls} for job ${jobId}:`, data);
                         
                         // Track when updates are happening
                         if (data.last_updated) {
@@ -526,11 +534,20 @@
                         // Check for stagnant progress
                         if (data.progress === lastProgress) {
                             stagnantUpdates++;
-                            showStatus(`Processing ${data.status} (no progress change for ${stagnantUpdates} polls)`);
+                            
+                            // On Vercel, if we're seeing no progress after a few polls, reset polling interval
+                            // to make sure we're polling frequently enough
+                            if (isVercel && stagnantUpdates > 3) {
+                                pollInterval = 2000; // Reset to initial interval
+                                showStatus(`Processing ${data.status} (no progress change for ${stagnantUpdates} polls, polling faster)`);
+                                console.log("Resetting poll interval to 2 seconds due to stagnant progress");
+                            } else {
+                                showStatus(`Processing ${data.status} (no progress change for ${stagnantUpdates} polls)`);
+                            }
                         } else {
                             stagnantUpdates = 0;
                             lastProgress = data.progress;
-                            showStatus(`Processing ${data.status}`);
+                            showStatus(`Processing ${data.status} (${data.progress}%)`);
                         }
                         
                         // Update UI with current status

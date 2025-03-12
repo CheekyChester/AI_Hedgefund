@@ -5,7 +5,14 @@ import uuid
 import os
 import logging
 import pickle
+import sys
 from flask import Response, stream_with_context, jsonify, session
+
+# Import storage from main_app if possible
+try:
+    from api.main_app import storage
+except ImportError:
+    storage = None
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -475,7 +482,7 @@ def run_analysis_in_background(job_id, ticker, api_key):
 # Function to process a single step of analysis on demand (for Vercel)
 def process_analysis_step(job_id, ticker, api_key):
     """Process a single step of analysis - for Vercel serverless model"""
-    logger.info(f"Processing next analysis step for job {job_id}")
+    logger.info(f"Processing next analysis step for job {job_id} with ticker: {ticker}")
     
     job = get_job(job_id)
     if not job:
@@ -487,8 +494,28 @@ def process_analysis_step(job_id, ticker, api_key):
         logger.info(f"Job {job_id} is already complete, no steps to process")
         return True
     
-    # Set API key
-    os.environ['PPLX_API_KEY'] = api_key
+    # Log important info for debugging
+    logger.info(f"Job {job_id} status before processing: {job.get('status')}, "
+               f"progress: {job.get('progress')}%, "
+               f"ticker: {job.get('ticker')}, "
+               f"API key present: {bool(api_key)}, "
+               f"API key in job: {bool(job.get('api_key'))}, "
+               f"First step status: {job.get('steps', [{}])[0].get('status')}")
+    
+    # Set API key - use the one from params, fallback to job data
+    api_key_to_use = api_key or job.get('api_key')
+    if not api_key_to_use:
+        logger.error(f"No API key available for job {job_id} - cannot process step")
+        update_job(job_id, {
+            'errors': job.get('errors', []) + ["No API key available for processing"],
+            'status': 'error',
+            'complete': True,
+            'last_updated': time.time()
+        })
+        return False
+        
+    logger.info(f"Setting API key (starts with: {api_key_to_use[:5]}...) for job {job_id}")
+    os.environ['PPLX_API_KEY'] = api_key_to_use
     
     try:
         # Import AI hedge fund
@@ -504,13 +531,36 @@ def process_analysis_step(job_id, ticker, api_key):
         # Find the next step to process
         next_step_idx = None
         result_so_far = {}
+        logger.info(f"Looking for next step to process in job {job_id}")
+        
+        # Log all step statuses for debugging
+        for i, step in enumerate(job['steps']):
+            logger.info(f"Job {job_id} step {i} ({step['name']}): status = {step['status']}")
+            
+        # Find first pending or running step
         for i, step in enumerate(job['steps']):
             if step['status'] == 'pending' or step['status'] == 'running':
                 next_step_idx = i
+                logger.info(f"Found next step to process: {i} ({step['name']})")
                 break
             # For completed steps, retrieve results if available
             if step['status'] == 'complete' and step.get('result'):
                 result_so_far[step['name']] = step.get('result')
+                
+        # If all jobs appear to be in some other state (not pending/running/complete),
+        # force the first step to pending so we can process it
+        if next_step_idx is None and not job.get('complete', False):
+            if any(step['status'] != 'complete' for step in job['steps']):
+                # Find first non-complete step and force it to pending
+                for i, step in enumerate(job['steps']):
+                    if step['status'] != 'complete':
+                        next_step_idx = i
+                        # Update step status to pending
+                        steps = job['steps']
+                        steps[i]['status'] = 'pending'
+                        update_job(job_id, {'steps': steps})
+                        logger.info(f"Forced step {i} ({step['name']}) to pending status")
+                        break
         
         if next_step_idx is None:
             # All steps are done, generate the final report if needed
@@ -701,38 +751,74 @@ def stream_job_status(job_id):
         # Current time to calculate elapsed time
         current_time = time.time()
         
-        # If job is not complete and not in error state, try to process the next step
-        if (not job.get('complete', False) and 
-            job.get('status') != 'error'):
+        # ALWAYS try to process jobs unless they're complete or errored
+        if not job.get('complete', False) and job.get('status') != 'error':
+            # Retrieve the API key from storage
+            stored_api_key = storage.get_api_key() if 'storage' in globals() else None
             
-            # Get the API key - required for processing
-            api_key = job.get('api_key')
+            # Use the API key from the job or from storage
+            api_key = job.get('api_key') or stored_api_key
             
-            # Log detailed info regardless of whether we process a step
+            # Log detailed info about the job
             logger.info(f"Job {job_id} status check - ticker: {job.get('ticker')}, " +
                       f"status: {job.get('status')}, progress: {job.get('progress')}%, " +
                       f"elapsed: {round(current_time - job.get('started_at', current_time), 1)}s, " +
                       f"last_updated: {round(current_time - job.get('last_updated', current_time), 1)}s ago, " +
-                      f"has_api_key: {bool(api_key)}")
+                      f"has_api_key_in_job: {bool(job.get('api_key'))}, " +
+                      f"has_api_key_in_storage: {bool(stored_api_key)}")
             
-            # Only process if we have an API key
-            if api_key:
-                # Process a step regardless of timing - Vercel serverless needs to make progress on each poll
-                # since we can't rely on background processing
+            # Make sure we have what we need to process a step
+            if job.get('ticker') and api_key:
+                # Force job to 'analyzing' state if it's still in 'ready'
+                if job.get('status') == 'ready':
+                    update_job(job_id, {
+                        'status': 'analyzing',
+                        'progress': 5,
+                        'last_updated': time.time()
+                    })
+                    logger.info(f"Updated job {job_id} status from 'ready' to 'analyzing'")
+                    # Refresh job data
+                    job = get_job(job_id)
+                
+                # Always try to process the next step
                 try:
                     # Process one step of the job
-                    logger.info(f"Processing next step for job {job_id} on status check")
-                    process_analysis_step(job_id, job.get('ticker'), api_key)
-                    # Get updated job state
+                    logger.info(f"Processing next step for job {job_id}")
+                    result = process_analysis_step(job_id, job.get('ticker'), api_key)
+                    
+                    # Get updated job state after processing
                     job = get_job(job_id)
                     if not job:
                         logger.error(f"Job {job_id} lost during processing step")
                         return jsonify({'error': 'Job lost during processing'})
-                    logger.info(f"Successfully processed step for job {job_id}, new progress: {job.get('progress')}%")
+                    
+                    # Log detailed outcome
+                    if result:
+                        logger.info(f"Successfully processed step for job {job_id}, new progress: {job.get('progress')}%")
+                    else:
+                        logger.warning(f"Failed to process step for job {job_id}, progress remains: {job.get('progress')}%")
                 except Exception as e:
-                    logger.error(f"Error processing step during status check for job {job_id}: {str(e)}")
+                    logger.error(f"Error processing step during status check for job {job_id}: {str(e)}", exc_info=True)
             else:
-                logger.error(f"Cannot process job {job_id} - API key missing from job data")
+                # Tell us what's missing
+                if not job.get('ticker'):
+                    logger.error(f"Cannot process job {job_id} - ticker missing from job data")
+                if not api_key:
+                    logger.error(f"Cannot process job {job_id} - API key missing from both job data and storage")
+                
+                # Try to import from storage to get the API key
+                try:
+                    from api.main_app import storage
+                    api_key = storage.get_api_key()
+                    if api_key:
+                        logger.info(f"Retrieved API key from storage module for job {job_id}")
+                        # Update the job with this API key
+                        update_job(job_id, {'api_key': api_key})
+                        job = get_job(job_id)  # Refresh job data
+                    else:
+                        logger.error(f"Storage module found but no API key is set")
+                except Exception as e:
+                    logger.error(f"Failed to import storage module: {str(e)}")
         
         # Prepare status data for response
         status_data = {
